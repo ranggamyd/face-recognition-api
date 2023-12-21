@@ -1,21 +1,10 @@
 import cv2
 import numpy as np
-import tensorflow as tf
-from keras.models import load_model
 
 from fastapi import FastAPI, File, UploadFile
+from triplet_loss import classify_images
 
 app = FastAPI()
-
-def classify_images(face_list1, face_list2, threshold=1.3):
-    # Getting the encodings for the passed faces
-    model = load_model('model.h5')
-    tensor1 = model.predict(face_list1)
-    tensor2 = model.predict(face_list2)
-
-    distance = np.sum(np.square(tensor1-tensor2), axis=-1)
-    prediction = np.where(distance <= threshold, 0, 1)
-    return prediction
 
 @app.get("/")
 def read_root():
